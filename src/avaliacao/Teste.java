@@ -4,59 +4,82 @@ import java.util.*;
 
 public class Teste {
 
-	static ArrayList<Conta> rep = new ArrayList<Conta>();
+	static ArrayList<Produto> rep = new ArrayList<Produto>();
 	static ArrayList<Usuario> repU = new ArrayList<Usuario>();
 
 	public static void main(String[] args) {
 		int opcao = 0;
 		Scanner s = new Scanner(System.in);
-
 		
-			System.out.println("\nBem vindo ao sistema Bancario tabajara\n ");
-			System.out.println("Faça seu cadastro\n ");
-			cadastrarUsuario(email, senha);
+			String email,senha;
+			
+			
+			System.out.println("\nBem vindo ao Controle de Estoque \n ");
+			System.out.println("FaÃ§a seu cadastro\n ");
+			System.out.println("Digite Seu email:");
+			email = s.nextLine();
+			System.out.println("Digite Sua Senha:");
+			senha = s.nextLine();
+			
+			
+			Usuario u = new Usuario(email,senha);
+			if (repU.add(u))
+				System.out.println("Conta Cadastrada com sucesso.\n");
+			else
+				System.out.println(
+						"A conta nÃ£o pÃ´de ser inserida, o repositÃ³rio pode estar cheio ou essa conta jÃ¡ existe no sistema");
 			
 			
 			
-			System.out.println("\nFaça seu login\n ");
+			
+			System.out.println("\nFaÃ§a seu login\n ");
 			fazerLogin(email,senha);
 			
 			
-			Criptografia.encriptografar(senha);
+			
+			 
+			String senhaCriptografada = Criptografia.encrypt(senha);
+		
+			System.out.println(senhaCriptografada);
+			
+			
+			
 			
 		
 			
 			
 
 		while (opcao != 9) {
-			System.out.println("\nSistema Bancário Tabajara\n");
-			System.out.println("Digite a sua opção:");
-			System.out.println("1 - Cadastrar Conta");
-			System.out.println("2 - Consultar Conta");
-			System.out.println("3 - Alterar Conta");
-			System.out.println("4 - Remover Conta");
-			System.out.println("5 - Exibe todas as contas");
+			System.out.println("\nControle de Estoque\n");
+			System.out.println("Digite a sua opÃ§Ã£o:");
+			System.out.println("1 - Cadastrar Produto");
+			System.out.println("2 - Consultar Produto");
+			System.out.println("3 - Alterar Produto");
+			System.out.println("4 - Remover Produto");
+			System.out.println("5 - Exibe todos os Produto");
+			
+			
 
 			System.out.println("9 - Sair do sistema");
-			System.out.print("Sua opção: ");
+			System.out.print("Sua opÃ§Ã£o: ");
 			opcao = s.nextInt();
 
 			switch (opcao) {
 			case 1: 
-				inserirConta();
+				inserirProduto();
 				break;
 
 			case 2: 
-				consultarConta();
+				consultarProduto();
 				break;
 			case 3: 
-				alterarConta();
+				alterarProduto();
 				break;
 			case 4: 
-				removerConta();
+				removerProduto();
 				break;
 			case 5: 
-				exibirTodasAsContas();
+				exibirTodosProdutos();
 				break;
 			}
 			try {
@@ -68,29 +91,11 @@ public class Teste {
 			}
 		}
 		
-		System.out.println("Fim da Operação");
+		System.out.println("Fim da OperaÃ§Ã£o");
 	}
 		
 	
 	
-	static String email;
-	static String senha;
-	
-	public static void cadastrarUsuario(String email,String senha) {
-	
-		Scanner s = new Scanner(System.in);
-		System.out.println("Digite Seu email:");
-		email = s.nextLine();
-		System.out.println("Digite Sua Senha:");
-		senha = s.nextLine();
-		Usuario u = new Usuario(email,senha);
-		if (repU.add(u))
-			System.out.println("Conta Cadastrada com sucesso.\n");
-		else
-			System.out.println(
-					"A conta não pôde ser inserida, o repositório pode estar cheio ou essa conta já existe no sistema");
-		
-	}
 	
 
 	
@@ -134,61 +139,64 @@ public class Teste {
 
 	
 
-	public static void consultarConta() {
+	public static void consultarProduto() {
+		String id;
 		Scanner s = new Scanner(System.in);
-		System.out.println("Digite o número da conta:");
-		String numero = s.next();
+		System.out.println("Digite o id do Produto:");
+		id = s.nextLine();
 		boolean encontrado = false;
 		for (int i = 0; i < rep.size(); i++) {
-			Conta c = rep.get(i);
-			if (c.getNumero().equals(numero)) {
-				System.out.println("Dados da conta: ");
-				System.out.println("Numero da conta: " + c.getNumero());
-				System.out.println("Nome do cliente: " + c.getNome());
-				System.out.println("Saldo da conta : " + c.getSaldo());
+			Produto p = rep.get(i);
+			if (p.getId().equals(id)) {
+				System.out.println("Dados do Produto: ");
+				System.out.println("Id do Produto: " + p.getId());
+				System.out.println("Nome do Produto: " + p.getNome());
+				System.out.println("Quantidade Produto : " + p.getQuantidade());
 				encontrado = true;
 				break;
 			}
 			
 		}
 		if (!encontrado) {
-			System.out.println("Conta não localizada");
+			System.out.println("Produto nÃ£o localizado");
 		}
 
 	}
 
-	public static void inserirConta() {
-		String numero = "", nome = "";
+	public static void inserirProduto() {
+		String nome = "", id = "";
+		double quantidade;
 		Scanner s = new Scanner(System.in);
-		System.out.println("Digite o número da conta:");
-		numero = s.nextLine();
-		System.out.println("Digite o nome do cliente dono da conta:");
+		System.out.println("Digite o Id do Produto:");
+		id = s.nextLine();
+		System.out.println("Digite o Nome do Produto:");
 		nome = s.nextLine();
-		System.out.println("Digite o saldo inicial da conta:");
-		double saldo = s.nextDouble();
-		Conta c = new Conta(numero, nome, saldo);
-		if (rep.add(c))
-			System.out.println("conta inserida com sucesso.");
+		System.out.println("Digite a Quantidade Inicial:");
+		 quantidade = s.nextDouble();
+		Produto p = new Produto(id, nome, quantidade);
+		if (rep.add(p))
+			System.out.println("Produto inserido com sucesso.");
 		else
 			System.out.println(
-					"A conta não pôde ser inserida, o repositório pode estar cheio ou essa conta já existe no sistema");
+					"O produto nÃ£o pode ser inserido");
 		
 	}
 
-	public static void alterarConta() {
-		String numero = "", nome = "";
+	public static void alterarProduto() {
+		String nome = "", id = "";
+		double quantidade;
 		Scanner s = new Scanner(System.in);
-		System.out.println("Digite o número da conta:");
-		numero = s.nextLine();
-		System.out.println("Digite o nome do cliente dono da conta:");
+		System.out.println("Digite o Id do Produto:");
+		id = s.nextLine();
+		System.out.println("Digite o nome do Produto:");
 		nome = s.nextLine();
-		System.out.println("Digite o saldo inicial da conta:");
-		double saldo = s.nextDouble();
-		Conta c = new Conta(numero, nome, saldo);
+		System.out.println("Digite a Quantidade:");
+		quantidade = s.nextDouble();
+		Produto c = new Produto(id, nome, quantidade);
 		boolean encontrado = false;
 		for (int i = 0; i < rep.size(); i++) {
-			Conta c2 = rep.get(i);
-			if (c2.getNumero().equals(numero)) {
+			Produto p = rep.get(i);
+			if (p.getId().equals(id)) {
 				rep.remove(i);
 				rep.add(c);
 				encontrado = true;
@@ -197,46 +205,46 @@ public class Teste {
 			
 		}
 		if (!encontrado) {
-			System.out.println("Conta não localizada");
+			System.out.println("Produto nÃ£o localizado");
 		} else
-			System.out.println(" Conta alterada.");
+			System.out.println(" Produto alterado.");
 	}
 
-	public static void removerConta() {
+	public static void removerProduto() {
 		Scanner s = new Scanner(System.in);
-		System.out.println("Digite o número da conta:");
-		String numero = s.next();
+		System.out.println("Digite o id do Produto:");
+		String id = s.next();
 		boolean encontrado = false;
 
 		for (int i = 0; i < rep.size(); i++) {
-			Conta c = rep.get(i);
-			if (c.getNumero().equals(numero)) {
+			Produto p = rep.get(i);
+			if (p.getId().equals(id)) {
 				rep.remove(i);
 				encontrado = true;
 				break;
 			}
 		}
 		if (!encontrado) {
-			System.out.println("Conta não localizada");
+			System.out.println("Produto nÃ£o localizado");
 		} else {
-			System.out.println("Conta removida.");
+			System.out.println("Produto removido.");
 		}
 	
 	}
 
-	public static void exibirTodasAsContas() {
+	public static void exibirTodosProdutos() {
 
-		System.out.println("Contas armazenadas: ");
+		System.out.println("Produtos armazenados: ");
 		for (int i = 0; i < rep.size(); i++) {
 			System.out.println("----------------------------------------------");
-			Conta c = rep.get(i);
-			System.out.println("Numero da conta: " + c.getNumero());
-			System.out.println("Nome do cliente: " + c.getNome());
-			System.out.println("Saldo da conta : " + c.getSaldo());
+			Produto c = rep.get(i);
+			System.out.println("Id do Produto: " + c.getId());
+			System.out.println("Nome do produto: " + c.getNome());
+			System.out.println("Quantidade do Produto : " + c.getQuantidade());
 
 		}
 		System.out.println("----------------------------------------------");
-		System.out.println("total de contas armazenadas: " + rep.size());
+		System.out.println("total de Produtos Armazenados: " + rep.size());
 	}
 	
 
