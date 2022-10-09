@@ -1,39 +1,38 @@
 package avaliacao;
 
-class Conta {
-	private String numero;
+class Produto {
 	private String nome;
-	private double saldo;
+	private String id;
+	private double quantidade;
 
-	public Conta(String numero, String nome, double saldo) {
-		this.numero = numero;
+	public Produto(String id, String nome, double quantidade) {
 		this.nome = nome;
-		this.saldo = saldo;
+		this.id = id;
+		this.quantidade = quantidade;
 	}
 
 	public String getNome() {
 		return nome;
 	}
 
-	public String getNumero() {
-		return numero;
-	}
-
-	public double getSaldo() {
-		return saldo;
-	}
-
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
 
-	public void setNumero(String numero) {
-		this.numero = numero;
+	public String getId() {
+		return id;
 	}
 
-	public void setSaldo(double saldo) {
-		this.saldo = saldo;
+	public void setId(String id) {
+		this.id = id;
 	}
+
+	public double getQuantidade() {
+		return quantidade;
+	}
+
 	
 	
+	
+
 }
