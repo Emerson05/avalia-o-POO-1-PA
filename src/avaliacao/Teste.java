@@ -13,41 +13,15 @@ public class Teste {
 		int opcao = 0;
 		Scanner s = new Scanner(System.in);
 		
-			String email,senha;
+			String email = "",senha = "";
 			
 			
-			System.out.println("\nBem vindo ao Controle de Estoque \n ");
-			System.out.println("Faça seu cadastro\n ");
-			System.out.println("Digite Seu email:");
-			email = s.nextLine();
-			System.out.println("Digite Sua Senha:");
-			senha = s.nextLine();
-		
+			CadastraUsuario(email, senha);
 			
-			Usuario u = new Usuario(email,senha);
-			if (repU.add(u))
-				System.out.println("Conta Cadastrada com sucesso.\n");
-			else
-				System.out.println(
-						"A conta não pôde ser inserida, o repositório pode estar cheio ou essa conta já existe no sistema");
-			
-			
-			
-			System.out.println("\nFaça seu login\n ");
 			fazerLogin(email,senha);
 			
-			
-			 
-			String senhaCriptografada = Criptografia.encrypt(senha);
 		
-			System.out.println("Senha Criptografada: " + senhaCriptografada);
-			
-			
-			
-			
-		
-			
-			
+				
 
 		while (opcao != 9) {
 			System.out.println("\nControle de Estoque\n");
@@ -96,11 +70,45 @@ public class Teste {
 		
 	
 	
+	public static void CadastraUsuario(String email,String senha) {
+		Scanner s = new Scanner(System.in);
+		System.out.println("\nBem vindo ao Controle de Estoque \n ");
+		System.out.println("Faça seu cadastro\n ");
+		System.out.println("Digite Seu email:");
+		email = s.nextLine();
+		System.out.println("Digite Sua Senha:");
+		senha = s.nextLine();
 	
+		
+		Usuario u = new Usuario(email,senha);
+		if (repU.add(u))
+			System.out.println("Conta Cadastrada com sucesso.\n");
+		else
+			System.out.println(
+					"A conta não pôde ser inserida, o repositório pode estar cheio ou essa conta já existe no sistema");
+		
+		
+		String senhaCriptografada = Criptografia.encrypt(senha);
+		
+		
+		 try {
+			    conn = Conexao.abrir();
+	            Statement stmt = conn.createStatement();
+	            String query = "INSERT INTO usuario ( email, senha) VALUES(" + " ' " + email + " ' " + " , " + " ' "+ senhaCriptografada + " ' " + ")";
+	            stmt.executeUpdate(query);
+	            stmt.close();
+	            conn.close();
+	            System.out.println(" Usuario Cadastrado.");
+	        }
+	        catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	}
 
 	
 	public static void fazerLogin(String email,String senha) {
 		Scanner s = new Scanner(System.in);
+		System.out.println("\nFaça seu login\n ");
 		System.out.println("Digite o email da conta:");
 		email = s.next();
 		
@@ -108,7 +116,7 @@ public class Teste {
 		 senha = s.next();
 		 
 		
-			
+		System.out.println();	
 		
 		for (int i = 0; i < repU.size(); i++) {
 			 Usuario u  = repU.get(i);
