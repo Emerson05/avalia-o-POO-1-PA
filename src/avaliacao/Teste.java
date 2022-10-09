@@ -1,4 +1,5 @@
 package avaliacao;
+import java.sql.*;
 
 import java.util.*;
 
@@ -6,7 +7,8 @@ public class Teste {
 
 	static ArrayList<Produto> rep = new ArrayList<Produto>();
 	static ArrayList<Usuario> repU = new ArrayList<Usuario>();
-
+	static Connection conn;
+	
 	public static void main(String[] args) {
 		int opcao = 0;
 		Scanner s = new Scanner(System.in);
@@ -20,7 +22,7 @@ public class Teste {
 			email = s.nextLine();
 			System.out.println("Digite Sua Senha:");
 			senha = s.nextLine();
-			
+		
 			
 			Usuario u = new Usuario(email,senha);
 			if (repU.add(u))
@@ -31,16 +33,14 @@ public class Teste {
 			
 			
 			
-			
 			System.out.println("\nFaça seu login\n ");
 			fazerLogin(email,senha);
-			
 			
 			
 			 
 			String senhaCriptografada = Criptografia.encrypt(senha);
 		
-			System.out.println(senhaCriptografada);
+			System.out.println("Senha Criptografada: " + senhaCriptografada);
 			
 			
 			
@@ -174,6 +174,19 @@ public class Teste {
 		System.out.println("Digite a Quantidade Inicial:");
 		 quantidade = s.nextDouble();
 		Produto p = new Produto(id, nome, quantidade);
+		  try {
+			  	conn = Conexao.abrir();
+	            Statement stmt = conn.createStatement();
+	            String query = "INSERT INTO Produto (id, nome, quantidade) VALUES(" + id + " , '" + nome + "' , " + quantidade + ")";
+	            stmt.executeUpdate(query);
+	            stmt.close();
+	            conn.close();
+	            System.out.println(" Produto Inserido.");
+	        }
+	        catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    
 		if (rep.add(p))
 			System.out.println("Produto inserido com sucesso.");
 		else
