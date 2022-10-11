@@ -153,7 +153,7 @@ public class Teste {
 		System.out.println("Digite o id do Produto:");
 		id = s.nextLine();
 		
-		System.out.println(id);
+		
 		
 				
 		        try  {  
