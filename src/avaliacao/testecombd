@@ -1,0 +1,296 @@
+package avaliacao;
+import java.sql.*;
+
+import java.util.*;
+
+public class Teste {
+
+	static ArrayList<Produto> rep = new ArrayList<Produto>();
+	static ArrayList<Usuario> repU = new ArrayList<Usuario>();
+	static Connection conn;
+	
+	public static void main(String[] args) {
+		int opcao = 0;
+		Scanner s = new Scanner(System.in);
+		
+			String email = "",senha = "";
+			
+			
+			CadastraUsuario(email, senha);
+			
+			fazerLogin(email,senha);
+			
+		
+				
+
+		while (opcao != 9) {
+			System.out.println("\nControle de Estoque\n");
+			System.out.println("Digite a sua opção:");
+			System.out.println("1 - Cadastrar Produto");
+			System.out.println("2 - Consultar Produto");
+			System.out.println("3 - Alterar Produto");
+			System.out.println("4 - Remover Produto");
+			System.out.println("5 - Exibe todos os Produto");
+			
+			
+
+			System.out.println("9 - Sair do sistema");
+			System.out.print("Sua opção: ");
+			opcao = s.nextInt();
+
+			switch (opcao) {
+			case 1: 
+				inserirProduto();
+				break;
+
+			case 2: 
+				consultarProduto();
+				break;
+			case 3: 
+				alterarProduto();
+				break;
+			case 4: 
+				removerProduto();
+				break;
+			case 5: 
+				exibirTodosProdutos();
+				break;
+			}
+			try {
+				Thread.sleep(1000);
+			}
+
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		System.out.println("Fim da Operação");
+	}
+		
+	
+	
+	public static void CadastraUsuario(String email,String senha) {
+		Scanner s = new Scanner(System.in);
+		System.out.println("\nBem vindo ao Controle de Estoque \n ");
+		System.out.println("Faça seu cadastro\n ");
+		System.out.println("Digite Seu email:");
+		email = s.nextLine();
+		System.out.println("Digite Sua Senha:");
+		senha = s.nextLine();
+	
+		
+		Usuario u = new Usuario(email,senha);
+		if (repU.add(u))
+			System.out.println("Conta Cadastrada com sucesso.\n");
+		else
+			System.out.println(
+					"A conta não pôde ser inserida, o repositório pode estar cheio ou essa conta já existe no sistema");
+		
+		
+		String senhaCriptografada = Criptografia.encrypt(senha);
+		
+		
+		 try {
+			    conn = Conexao.abrir();
+	            Statement stmt = conn.createStatement();
+	            String query = "INSERT INTO usuario ( email, senha) VALUES(" + " ' " + email + " ' " + " , " + " ' "+ senhaCriptografada + " ' " + ")";
+	            stmt.executeUpdate(query);
+	            stmt.close();
+	            conn.close();
+	            System.out.println(" Usuario Cadastrado.");
+	        }
+	        catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	}
+
+	
+	public static void fazerLogin(String email,String senha) {
+		Scanner s = new Scanner(System.in);
+		System.out.println("\nFaça seu login\n ");
+		System.out.println("Digite o email da conta:");
+		email = s.next();
+		
+		System.out.println("Digite a senha da conta:");
+		 senha = s.next();
+		 
+		
+		System.out.println();	
+		
+		for (int i = 0; i < repU.size(); i++) {
+			 Usuario u  = repU.get(i);
+			if (!u.getEmail().equalsIgnoreCase(email) || !u.getSenha().equalsIgnoreCase(senha) ) {
+				while(!u.getEmail().equalsIgnoreCase(email) || !u.getSenha().equals(senha) ) {
+					System.out.println("Email ou senha ivalida tente novamente: ");
+					System.out.println("Digite o email da conta:");
+					email = s.next();
+					
+					System.out.println("Digite a senha da conta:");
+					senha = s.next();
+					
+				}
+				System.out.println("Login Efetuado com sucesso");
+			
+			}else {
+				System.out.println("Login Efetuado com sucesso");
+				
+			
+			}
+			
+			
+			
+		}
+		
+	
+	}
+
+	
+
+	public static void consultarProduto() {
+		String id;
+		Scanner s = new Scanner(System.in);
+		System.out.println("Digite o id do Produto:");
+		id = s.nextLine();
+		
+		System.out.println(id);
+		
+				
+		        try  {  
+		            conn = Conexao.abrir();
+		        
+		            Statement s1 = conn.createStatement();
+		            ResultSet rs = s1.executeQuery("SELECT id, nome, Quantidade FROM produto where id = " + "'" + id + " '"  );
+
+		            System.out.println("Produtos na base de dados:\n");
+		            while (rs.next()) {
+		                System.out.println("Id: " + rs.getString("Id") + " Nome do Produto: "+ rs.getString("nome") + "  Quantidade: "+ rs.getDouble("quantidade"));
+		            }
+
+
+		            rs.close();
+		            s1.close();
+		            conn.close();
+		        }  catch(Exception e)  {  
+		            System.out.println("Hi, deu bronca...");  
+		        }  
+				
+		      
+
+	}
+
+
+	public static void inserirProduto() {
+		String nome = "", id = "";
+		double quantidade;
+		Scanner s = new Scanner(System.in);
+		System.out.println("Digite o Id do Produto:");
+		id = s.nextLine();
+		System.out.println("Digite o Nome do Produto:");
+		nome = s.nextLine();
+		System.out.println("Digite a Quantidade Inicial:");
+		 quantidade = s.nextDouble();
+		Produto p = new Produto(id, nome, quantidade);
+		  try {
+			  	conn = Conexao.abrir();
+	            Statement stmt = conn.createStatement();
+	            String query = "INSERT INTO Produto (id, nome, quantidade) VALUES(" +  "'" + id +  " ' "  + " , '" + nome + "' , " + quantidade + ")";
+	            stmt.executeUpdate(query);
+	            stmt.close();
+	            conn.close();
+	            System.out.println(" Produto Inserido.");
+	        }
+	        catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    
+		if (rep.add(p))
+			System.out.println("Produto inserido com sucesso.");
+		else
+			System.out.println(
+					"O produto não pode ser inserido");
+		
+	}
+
+	public static void alterarProduto() {
+		String nome = "", id = "";
+		double quantidade;
+		Scanner s = new Scanner(System.in);
+		System.out.println("Digite o Id do Produto:");
+		id = s.nextLine();
+		System.out.println("Digite o nome do Produto:");
+		nome = s.nextLine();
+		System.out.println("Digite a Quantidade:");
+		quantidade = s.nextDouble();
+		Produto c = new Produto(id, nome, quantidade);
+		
+		
+		
+		
+		  try {
+			  	conn = Conexao.abrir();
+	            Statement stmt = conn.createStatement();
+	            String query = "UPDATE produto " +  "SET nome = " + "'" + nome + "'" + " , " + "quantidade = " + "'" + quantidade + "'" +  " where id = " + "'" + id+ "'";
+	            stmt.executeUpdate(query);
+	            stmt.close();
+	            conn.close();
+	            System.out.println(" Produto Atualizado.");
+	        }
+	        catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	}
+		 
+		
+	
+
+	public static void removerProduto() {
+		Scanner s = new Scanner(System.in);
+		System.out.println("Digite o id do Produto:");
+		String id = s.next();
+		
+
+		try {
+		  	conn = Conexao.abrir();
+            Statement stmt = conn.createStatement();
+            String query = "delete  from  produto " + " where id = " + "'" + id + "'";
+            stmt.executeUpdate(query);
+            stmt.close();
+            conn.close();
+            System.out.println(" Produto Removido.");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+	
+	}
+
+	public static void exibirTodosProdutos() {
+			
+				 
+				
+		        try  {  
+		            conn = Conexao.abrir();
+		        
+		            Statement s1 = conn.createStatement();
+		            ResultSet rs = s1.executeQuery("SELECT id,     nome, Quantidade FROM produto" );
+
+		            System.out.println("Contas na base de dados:\n");
+		            while (rs.next()) {
+		                System.out.println("Id: " + rs.getString("Id") + " Nome do Produto: "+ rs.getString("nome") + "  Quantidade: "+ rs.getDouble("quantidade"));
+		            }
+
+
+		            rs.close();
+		            s1.close();
+		            conn.close();
+		        }  catch(Exception e)  {  
+		            System.out.println("Hi, deu bronca...");  
+		        }  	
+				
+				
+			
+
+	}
+}
+	
