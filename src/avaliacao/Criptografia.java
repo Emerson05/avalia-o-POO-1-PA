@@ -28,7 +28,7 @@ public class Criptografia{
       return Base64.getEncoder()
           .encodeToString(cipher.doFinal(senha.getBytes(StandardCharsets.UTF_8)));
     } catch (Exception e) {
-      System.out.println("Error while encrypting: " + e.toString());
+      System.out.println("Erro ao criptografar: " + e.toString());
     }
     return null;
   }
